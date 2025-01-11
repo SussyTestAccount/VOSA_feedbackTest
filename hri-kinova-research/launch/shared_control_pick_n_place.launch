@@ -1,0 +1,19 @@
+<launch>
+
+    <arg name="ip_address" default="192.168.1.10"/>
+    <arg name="robot_name" default="my_gen3"/>
+
+    <!-- joy args -->
+    <arg name="joy_config" default="xbox" />
+    <arg name="joy_dev" default="/dev/input/js1" />
+    <arg name="config_filepath" default="$(find hri-kinova-research)/config/$(arg joy_config).config.yaml" />
+    <arg name="joy_topic" default="joy" />
+
+    <!-- joy node -->
+    <node pkg="hri-kinova-research" type="custom_joy_node.py" name="custom_joy_node" output="screen"></node>
+
+    <!-- pick and place experiment -->
+    <node pkg="hri-kinova-research" type="pick_and_place_vision.py" name="Assistive_Teleop" output="screen">
+    <param name="robot_name" value="$(arg robot_name)"/></node>
+
+</launch>

@@ -1,0 +1,14 @@
+<launch>
+
+    <arg name="ip_address" default="192.168.1.10"/>
+    <arg name="robot_name" default="my_gen3"/>
+
+    <!-- joy node -->
+    <node pkg="hri-kinova-research" type="custom_joy_node.py" name="custom_joy_node" output="screen"></node>
+
+    <!-- shelving experiment -->
+    <node pkg="hri-kinova-research" type="place_shelving_vision.py" name="Assistive_Teleop" output="screen">
+        <param name="robot_name" value="$(arg robot_name)"/>
+    </node>
+    
+</launch>
