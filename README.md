@@ -45,11 +45,11 @@ For detailed installation steps, refer to the official documentation of these li
 
     - **Deceptive Grasping:**  
       ```bash
-      roslaunch hri-kinova-research deceptive_grasping.launch
+      roslaunch hri-kinova-research shared_control_deceptive_grasping.launch
       ```
 
     - **Shelving:**  
       ```bash
-      roslaunch hri-kinova-research shelving.launch
+      roslaunch hri-kinova-research shared_control_shelving.launch
       ```
   
