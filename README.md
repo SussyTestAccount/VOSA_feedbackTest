@@ -52,4 +52,16 @@ For detailed installation steps, refer to the official documentation of these li
       ```bash
       roslaunch hri-kinova-research shared_control_shelving.launch
       ```
-  
+
+  ### Cite this work 
+  ```
+@misc{belsare2025zeroshotuserintentrecognition,
+      title={Toward Zero-Shot User Intent Recognition in Shared Autonomy}, 
+      author={Atharv Belsare and Zohre Karimi and Connor Mattson and Daniel S. Brown},
+      year={2025},
+      eprint={2501.08389},
+      archivePrefix={arXiv},
+      primaryClass={cs.RO},
+      url={https://arxiv.org/abs/2501.08389}, 
+}
+```
