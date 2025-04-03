@@ -53,15 +53,19 @@ For detailed installation steps, refer to the official documentation of these li
       roslaunch hri-kinova-research shared_control_shelving.launch
       ```
 
-  ### Cite this work 
+  ### Cite this work (BibTeX)
   ```
-@misc{belsare2025zeroshotuserintentrecognition,
-      title={Toward Zero-Shot User Intent Recognition in Shared Autonomy}, 
-      author={Atharv Belsare and Zohre Karimi and Connor Mattson and Daniel S. Brown},
-      year={2025},
-      eprint={2501.08389},
-      archivePrefix={arXiv},
-      primaryClass={cs.RO},
-      url={https://arxiv.org/abs/2501.08389}, 
+@inproceedings{10.5555/3721488.3721519,
+author = {Belsare, Atharv and Karimi, Zohre and Mattson, Connor and Brown, Daniel S.},
+title = {Toward Zero-Shot User Intent Recognition in Shared Autonomy},
+year = {2025},
+publisher = {IEEE Press},
+abstract = {A fundamental challenge of shared autonomy is to use high-DoF robots to assist, rather than hinder, humans by first inferring user intent and then empowering the user to achieve their intent. Although successful, prior methods either rely heavily on a priori knowledge of all possible human intents or require many demonstrations and interactions with the human to learn these intents before being able to assist the user. We propose and study a zero-shot, vision-only shared autonomy (VOSA) framework designed to allow robots to use end-effector vision to estimate zero-shot human intents in conjunction with blended control to help humans accomplish manipulation tasks with unknown and dynamically changing object locations. To demonstrate the effectiveness of our VOSA framework, we instantiate a simple version of VOSA on a Kinova Gen3 manipulator and evaluate our system by conducting a user study on three tabletop manipulation tasks. The performance of VOSA matches that of an oracle baseline model that receives privileged knowledge of possible human intents while also requiring significantly less effort than unassisted teleoperation. In more realistic settings, where the set of possible human intents is fully or partially unknown, we demonstrate that VOSA requires less human effort and time than baseline approaches while being preferred by a majority of the participants. Our results demonstrate the efficacy and efficiency of using off-the-shelf vision algorithms to enable flexible and beneficial shared control of a robot manipulator. Code and videos available here: https://sites.google.com/view/zeroshot-sharedautonomy/home},
+booktitle = {Proceedings of the 2025 ACM/IEEE International Conference on Human-Robot Interaction},
+pages = {222–231},
+numpages = {10},
+keywords = {computer vision, shared autonomy, teleoperation},
+location = {Melbourne, Australia},
+series = {HRI '25}
 }
-```
+  ```
