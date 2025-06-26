@@ -6,6 +6,7 @@ Pick and Place Experiment
 
 import math
 import time
+from std_msgs.msg import Float32MultiArray
 
 import rospy
 import torch
@@ -106,6 +107,9 @@ class AssistiveTeleoperation:
         self.last_action_notif_type = None
 
         self.alpha_history = []
+
+        self.confidence_pub = rospy.Publisher('/goal_confidence', Float32MultiArray, queue_size=10)
+
 
 
     def centroid_callback(self, centroid_msg):
@@ -545,6 +549,7 @@ class AssistiveTeleoperation:
                         # If no goals, set ur = zeros
                         blended_commmand, alpha = self.blend_inputs(self.uh, np.zeros(6),
                                                                     predicted_goal_index=-1)
+                    self.confidence_pub.publish(Float32MultiArray(data=self.confidences))
 
                     if np.linalg.norm(blended_commmand[0:3]) > 1:
                         blended_commmand[0:3] /= np.linalg.norm(blended_commmand[0:3])
