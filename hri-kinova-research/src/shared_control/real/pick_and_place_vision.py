@@ -108,6 +108,8 @@ class AssistiveTeleoperation:
 
         self.alpha_history = []
 
+        #Sets up publisher node for publishing confidence
+        
         self.confidence_pub = rospy.Publisher('/goal_confidence', Float32MultiArray, queue_size=10)
 
 
@@ -549,6 +551,8 @@ class AssistiveTeleoperation:
                         # If no goals, set ur = zeros
                         blended_commmand, alpha = self.blend_inputs(self.uh, np.zeros(6),
                                                                     predicted_goal_index=-1)
+
+                    #Publishes confidence
                     self.confidence_pub.publish(Float32MultiArray(data=self.confidences))
 
                     if np.linalg.norm(blended_commmand[0:3]) > 1:
