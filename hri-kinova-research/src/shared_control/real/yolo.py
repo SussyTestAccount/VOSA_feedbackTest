@@ -5,6 +5,9 @@ from sensor_msgs.msg import Image
 import numpy as np
 import cv2
 import torch
+from std_msgs.msg import String
+from sensor_msgs.msg import Image as ROSImage
+from cv_bridge import CvBridge
 from std_msgs.msg import Int32
 from ultralytics import YOLO
 
@@ -20,6 +23,10 @@ class ObjectDetection:
             else "cpu"
         )
         self.publisher = rospy.Publisher('/num_objects', Int32, queue_size=10)
+        self.image_pub = rospy.Publisher('/detected_objects/image', ROSImage, queue_size=10)
+        self.label_pub = rospy.Publisher('/detected_objects/label', String, queue_size=10)
+        self.bridge = CvBridge()
+
 
 
     def load_model(self):
@@ -75,8 +82,20 @@ class ObjectDetection:
                 x1, y1, x2, y2 = int(row[0] * x_shape), int(row[1] * y_shape), int(row[2] * x_shape), int(
                     row[3] * y_shape)
                 bgr = (0, 255, 0)
+                label = self.class_to_label(labels[i])
+
+                # Crop the object
+                cropped = frame[y1:y2, x1:x2]
+                
+                # Publish the cropped image and label
+                ros_img = self.bridge.cv2_to_imgmsg(cropped, encoding='bgr8')
+                self.image_pub.publish(ros_img)
+                self.label_pub.publish(String(data=label))
+                
+                # Still draw the box for visualization
                 cv2.rectangle(frame, (x1, y1), (x2, y2), bgr, 2)
-                cv2.putText(frame, self.class_to_label(labels[i]), (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.9, bgr, 2)
+                cv2.putText(frame, label, (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.9, bgr, 2)
+
 
         return frame, object_count
 
