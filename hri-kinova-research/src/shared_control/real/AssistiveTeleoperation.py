@@ -87,6 +87,13 @@ class AssistiveTeleoperation:
         self.send_twist_command = rospy.ServiceProxy(send_twist_command_full_name, SendTwistJoystickCommand)
         self.alpha_history = []
 
+        from std_msgs.msg import Float32MultiArray
+        from geometry_msgs.msg import Point
+        from custom_msgs.msg import CentroidConfidence  # <-- You’ll create this custom message
+        
+        self.centroid_conf_pub = rospy.Publisher('/goal_confidence_centroids', CentroidConfidenceArray, queue_size=10)
+
+
     def plot_goal_confidences(self, ax):
         plt.clf()
         latest_confidences = self.confidences
@@ -343,6 +350,7 @@ class AssistiveTeleoperation:
         confidences = softmax_confidences.tolist()
         self.confidences = confidences
         inferred_goal_index = torch.argmax(softmax_confidences).item()
+        self.confidences = softmax_confidences.tolist()
         print("confidences - ", self.confidences) # 0.24627863806045594, 0.2296496482449283, 0.31338556104623855, 0.21068615264837723
         return inferred_goal_index, confidences[inferred_goal_index]
 
@@ -426,6 +434,16 @@ class AssistiveTeleoperation:
 
                     ur_list = self.compute_ur_for_all_goals(self.ee_position, self.ee_pose)
                     inferred_goal, confidence = self.infer_goal(ur_list)
+
+                    msg = CentroidConfidenceArray() #new
+                    for i, pos in enumerate(self.list_goals):
+                        pt = Point(x=round(pos[0], 2), y=round(pos[1], 2), z=round(pos[2], 2))
+                        item = CentroidConfidence()
+                        item.centroid = pt
+                        item.confidence = float(self.confidences[i])  # Make sure self.confidences is assigned in infer_goal
+                        msg.items.append(item)
+                    
+                    self.centroid_conf_pub.publish(msg)
                    
                     print("ur_list - ", ur_list)
 
