@@ -10,6 +10,8 @@ from sensor_msgs.msg import Image as ROSImage
 from cv_bridge import CvBridge
 from std_msgs.msg import Int32
 from ultralytics import YOLO
+from geometry_msgs.msg import Point
+
 
 class ObjectDetection:
     def __init__(self):
@@ -25,6 +27,7 @@ class ObjectDetection:
         self.publisher = rospy.Publisher('/num_objects', Int32, queue_size=10)
         self.image_pub = rospy.Publisher('/detected_objects/image', ROSImage, queue_size=10)
         self.label_pub = rospy.Publisher('/detected_objects/label', String, queue_size=10)
+        self.centroid_pub = rospy.Publisher('/detected_objects/centroid', Point, queue_size=10)
         self.bridge = CvBridge()
 
 
@@ -95,6 +98,13 @@ class ObjectDetection:
                 # Still draw the box for visualization
                 cv2.rectangle(frame, (x1, y1), (x2, y2), bgr, 2)
                 cv2.putText(frame, label, (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.9, bgr, 2)
+                # Compute center
+                center_x = (x1 + x2) / 2.0
+                center_y = (y1 + y2) / 2.0
+                center_point = Point(x=center_x, y=center_y, z=0.0)
+                
+                # Publish centroid
+                self.centroid_pub.publish(center_point)
 
 
         return frame, object_count
