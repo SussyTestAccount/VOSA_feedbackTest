@@ -1,0 +1,1 @@
+CentroidConfidence[] items
