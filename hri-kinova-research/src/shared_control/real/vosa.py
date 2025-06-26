@@ -6,6 +6,9 @@ from sensor_msgs.msg import PointCloud
 from geometry_msgs.msg import Point32
 from sag import SAGTeleoperation
 from constants import STOP_SCAN_THRESHOLD, PLACEMENT_THRESHOLDS, HOME
+from std_msgs.msg import Float32MultiArray
+from geometry_msgs.msg import Point
+from custom_msgs.msg import CentroidConfidence
 
 class VOSATeleoperation(SAGTeleoperation):
     def __init__(self):
@@ -70,6 +73,13 @@ class VOSATeleoperation(SAGTeleoperation):
             elif self.current_goal_set:
                 ur_list = self.compute_ur_for_all_goals()
                 goal_idx, confidence = self.infer_goal(ur_list)
+
+                #new
+                msg = CentroidConfidenceArray()
+                for i, 
+                item = CentroidConfidence()
+                
+                
                 blended, alpha = self.blend_inputs(self.uh, ur_list[goal_idx], confidence)
                 self.twist_command(*blended)
             else:
