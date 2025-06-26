@@ -15,7 +15,10 @@ class VOSATeleoperation(SAGTeleoperation):
         self.pick_set = []
         self.adjusted_z = None
         self.Z_is_updated = False
+        
         self.confidence_publisher = rospy.Publisher()
+        self.centroid_conf_pub = rospy.Publisher('/goal_confidence_centroids', CentroidConfidenceArray, queue_size=10)
+        
         rospy.Subscriber("/clusters", PointCloud, self.centroid_callback)
         rospy.loginfo("[VOSA] Initialized with dynamic pick set subscription.")
 
