@@ -128,13 +128,15 @@ class AssistiveTeleoperation:
         elif MODE == 2:
             if self.ee_position[0] > 0.45:
                 return
-
             self.obj_pos = []
+            keys = []
             for point in centroid_msg.points:
-                print(point)
                 centroid = np.array([point.x + 0.025, point.y - 0.01, point.z])
-                if point.y > 0.0:  # Adjust this threshold based on enviornment.
+                if point.y > 0.0:
                     self.obj_pos.append(centroid)
+                    keys.append([round(centroid[0], 1), round(centroid[1], 1)])
+        
+            rospy.set_param("/vision_centroid_keys", keys)
 
     def plot_goal_confidences(self, ax):
         plt.clf()
