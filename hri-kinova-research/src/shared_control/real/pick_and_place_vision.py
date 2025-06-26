@@ -452,11 +452,13 @@ class AssistiveTeleoperation:
     def calculate_distance_from_goal(self, current_position):
         distances = [np.linalg.norm(goal - current_position) for goal in self.current_goal]
         return distances
-
+        
+    #Updated to populate self.confidences
     def infer_goal(self, ur_list):
         raw_confidences = [self.compute_confidence(ur_list[i], i) for i in range(len(ur_list))]
         softmax_confidences = F.softmax(torch.tensor(raw_confidences), dim=0)
         confidences = softmax_confidences.tolist()
+        self.confidences = confidences  # ✅ Add this line to store the list
         inferred_goal_index = torch.argmax(softmax_confidences).item()
         return inferred_goal_index, confidences[inferred_goal_index]
 
@@ -552,7 +554,8 @@ class AssistiveTeleoperation:
                         blended_commmand, alpha = self.blend_inputs(self.uh, np.zeros(6),
                                                                     predicted_goal_index=-1)
 
-                    #Publishes confidence
+                    #Publishes confidences and displays in terminal
+                    rospy.loginfo(f"Published confidences: {self.confidences}")
                     self.confidence_pub.publish(Float32MultiArray(data=self.confidences))
 
                     if np.linalg.norm(blended_commmand[0:3]) > 1:
