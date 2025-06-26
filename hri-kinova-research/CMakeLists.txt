@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   roslaunch
   std_msgs
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -54,6 +55,9 @@ find_package(catkin REQUIRED COMPONENTS
 #   FILES
 #   Message1.msg
 #   Message2.msg
+  FILES
+  CentroidConfidence.msg
+  CentroidConfidenceArray.msg
 # )
 
 ## Generate services in the 'srv' folder
@@ -72,7 +76,9 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
-#   DEPENDENCIES
+   DEPENDENCIES
+   std_msgs
+   geometry_msgs
 #   geometry_msgs
 # )
 
