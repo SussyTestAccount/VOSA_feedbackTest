@@ -101,7 +101,7 @@ class ObjectDetection:
                 # Compute center
                 center_x = (x1 + x2) / 2.0
                 center_y = (y1 + y2) / 2.0
-                center_point = Point(x=center_x, y=center_y, z=0.0)
+                center_point = Point(x=round(center_x, 2), y=round(center_y, 2), z=0.0)
                 
                 # Publish centroid
                 self.centroid_pub.publish(center_point)
