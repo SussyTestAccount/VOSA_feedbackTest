@@ -2,10 +2,13 @@
 
 import rospy
 from sensor_msgs.msg import Image
-from std_msgs.msg import Float32MultiArray, String
+from std_msgs.msg import String
 from geometry_msgs.msg import Point
 from cv_bridge import CvBridge
 import cv2
+
+# ✅ Import custom message types
+from custom_msgs.msg import CentroidConfidence, CentroidConfidenceArray
 
 class HighestConfidenceViewer:
     def __init__(self):
@@ -23,12 +26,12 @@ class HighestConfidenceViewer:
         rospy.Subscriber('/detected_objects/image', Image, self.image_callback)
         rospy.Subscriber('/detected_objects/label', String, self.label_callback)
         rospy.Subscriber('/detected_objects/centroid', Point, self.centroid_callback)
-        rospy.Subscriber('/goal_confidence', Float32MultiArray, self.confidence_callback)
+        rospy.Subscriber('/goal_confidence_centroids', CentroidConfidenceArray, self.confidence_callback)
 
-        rospy.loginfo("Initialized viewer using centroid-based matching")
+        rospy.loginfo("Initialized viewer using CentroidConfidenceArray messages")
 
     def centroid_callback(self, msg):
-        centroid_key = (round(msg.x, 1), round(msg.y, 1))  # Round for stability
+        centroid_key = (round(msg.x, 2), round(msg.y, 2))  # Match precision with publisher
         self.centroid_queue.append(centroid_key)
 
     def image_callback(self, msg):
@@ -46,16 +49,11 @@ class HighestConfidenceViewer:
             self.label_dict[key] = msg.data
 
     def confidence_callback(self, msg):
-        # Assume confidence list is aligned with known centroids in obj_pos
-        # We'll map confidence[i] to obj_pos[i]
-        # This mapping logic must mirror centroid processing in pick_and_place_vision.py
-        obj_pos_list = rospy.get_param("/vision_centroid_keys", [])  # Shared centroid keys
-        confidences = msg.data
-
-        for i, conf in enumerate(confidences):
-            if i < len(obj_pos_list):
-                key = tuple(round(x, 1) for x in obj_pos_list[i][:2])  # Use only x, y
-                self.confidence_dict[key] = conf
+        # msg is of type CentroidConfidenceArray
+        self.confidence_dict.clear()
+        for item in msg.items:
+            key = (round(item.centroid.x, 2), round(item.centroid.y, 2))
+            self.confidence_dict[key] = item.confidence
 
         self.display_highest_confidence_object()
 
