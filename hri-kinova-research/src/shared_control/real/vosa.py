@@ -8,7 +8,8 @@ from sag import SAGTeleoperation
 from constants import STOP_SCAN_THRESHOLD, PLACEMENT_THRESHOLDS, HOME
 from std_msgs.msg import Float32MultiArray
 from geometry_msgs.msg import Point
-from custom_msgs.msg import CentroidConfidence
+from custom_msgs.msg import CentroidConfidence, CentroidConfidenceArray
+
 
 class VOSATeleoperation(SAGTeleoperation):
     def __init__(self):
@@ -19,8 +20,9 @@ class VOSATeleoperation(SAGTeleoperation):
         self.adjusted_z = None
         self.Z_is_updated = False
         
-        self.confidence_publisher = rospy.Publisher()
         self.centroid_conf_pub = rospy.Publisher('/goal_confidence_centroids', CentroidConfidenceArray, queue_size=10)
+
+
         
         rospy.Subscriber("/clusters", PointCloud, self.centroid_callback)
         rospy.loginfo("[VOSA] Initialized with dynamic pick set subscription.")
@@ -76,8 +78,13 @@ class VOSATeleoperation(SAGTeleoperation):
 
                 #new
                 msg = CentroidConfidenceArray()
-                for i, 
-                item = CentroidConfidence()
+                for i, pt in enumerate(self.current_goal_set):
+                    item = CentroidConfidence()
+                    item.centroid = Point(x=round(pt[0], 2), y=round(pt[1], 2), z=round(pt[2], 2))
+                    item.confidence = float(self.confidences[i])
+                    msg.items.append(item)
+                self.centroid_conf_pub.publish(msg)
+
                 
                 
                 blended, alpha = self.blend_inputs(self.uh, ur_list[goal_idx], confidence)
