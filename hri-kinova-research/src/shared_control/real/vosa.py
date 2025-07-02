@@ -54,6 +54,23 @@ class VOSATeleoperation(SAGTeleoperation):
         self.pick_set = detected
         rospy.loginfo(f"[VOSA] Updated pick set with {len(detected)} centroids.")
 
+    #defined inferred goal
+    def infer_goal(self, ur_list):
+        # Compute raw confidence for each goal using inherited method
+        raw_confidences = [self.compute_confidence(ur, i) for i, ur in enumerate(ur_list)]
+    
+        # Normalize with softmax for probabilistic interpretation
+        soft_confidences = self.softmax(np.array(raw_confidences))
+    
+        # Store the full confidence list for later publishing
+        self.confidences = soft_confidences.tolist()
+    
+        # Choose the goal with highest confidence
+        inferred_goal_index = int(np.argmax(soft_confidences))
+    
+        return inferred_goal_index, self.confidences[inferred_goal_index]
+
+
     def main(self):
         rate = rospy.Rate(10)
         while not rospy.is_shutdown():
