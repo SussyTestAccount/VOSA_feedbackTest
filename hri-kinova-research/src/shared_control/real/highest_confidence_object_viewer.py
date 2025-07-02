@@ -7,7 +7,6 @@ from geometry_msgs.msg import Point
 from cv_bridge import CvBridge
 import cv2
 
-# ✅ Import custom message types
 from custom_msgs.msg import CentroidConfidence, CentroidConfidenceArray
 
 class HighestConfidenceViewer:
