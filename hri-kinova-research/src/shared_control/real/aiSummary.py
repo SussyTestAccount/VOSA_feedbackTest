@@ -10,6 +10,7 @@ import cv2
 from custom_msgs.msg import CentroidConfidence, CentroidConfidenceArray
 
 import openai  # NEEDS PACKAGE DOWNLOADED AND KEY TO WORK!!
+import os
 
 openai.api_key = "" #CHANGE THIS LATER TO AN ENV VARIABLE!!
 
